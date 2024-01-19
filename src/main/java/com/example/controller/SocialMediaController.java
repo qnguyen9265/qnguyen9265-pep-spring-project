@@ -41,9 +41,13 @@ public class SocialMediaController {
 
     @PostMapping("/register")
     public ResponseEntity<Account> registerAccount(@RequestParam String username, @RequestParam String password){
-        if (username != null && !username.isEmpty() && password.length() > 4){
+        Account loginAccount = accountService.checkAccountExistsByUsername(username);
+        if (username != null && !username.isEmpty() && password.length() > 4 && loginAccount == null){
             Account newAccount = accountService.registerAccount(username, password);
             return new ResponseEntity<Account>(newAccount, HttpStatus.OK);
+        }
+        else if (loginAccount.getUsername() == username){
+            return new ResponseEntity<Account>(HttpStatus.CONFLICT);
         }
         else{
             return new ResponseEntity<Account>(HttpStatus.BAD_REQUEST);
@@ -54,8 +58,8 @@ public class SocialMediaController {
     public ResponseEntity<Account> login(@RequestParam String username, @RequestParam String password){
         Account loginAccount = accountService.checkAccountExistsByUsernameAndPassword(username, password);
         if (loginAccount.getUsername().equals(username) && loginAccount.getPassword().equals(password)){
-            loginAccount = accountService.loginAccount(username, password);
-            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
+            Account newAccountLogin = accountService.loginAccount(username, password);
+            return new ResponseEntity<Account>(newAccountLogin, HttpStatus.OK);
         }
         else{
             return new ResponseEntity<Account>(HttpStatus.UNAUTHORIZED);

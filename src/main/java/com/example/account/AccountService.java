@@ -30,6 +30,10 @@ public class AccountService {
         return accountRepository.login(username, password);
     }
 
+    public Account checkAccountExistsByUsername(String username){
+        return accountRepository.findAccountByUsername(username);
+    }
+
     public Account checkAccountExistsByUsernameAndPassword(String username, String password){
         return accountRepository.findAccountByUsernameAndPassword(username, password);
     }
